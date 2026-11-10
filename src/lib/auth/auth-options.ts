@@ -1,9 +1,11 @@
 import { PrismaAdapter } from "@/src/lib/auth/prisma-adapter";
-import type { Account } from "next-auth";
+import type { Account, NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { prisma } from "../prisma";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(),
+  session: { strategy: "database" },
 
   providers: [
     GoogleProvider({
@@ -33,6 +35,19 @@ export const authOptions = {
     }),
   ],
 
+  events: {
+    async createUser({ user }) {
+      await prisma.userTimeInterval.createMany({
+        data: [1, 2, 3, 4, 5].map((weekDay) => ({
+          week_day: weekDay,
+          time_start_in_minutes: 480,
+          time_end_in_minutes: 1080,
+          user_id: user.id,
+        })),
+      });
+    },
+  },
+
   callbacks: {
     async signIn({ account }: { account: Account | null }) {
       if (
@@ -42,6 +57,18 @@ export const authOptions = {
       }
 
       return true;
+    },
+
+    async session({ session, user }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          username: user.username,
+          avatar_url: user.avatar_url,
+        },
+      };
     },
   },
 };

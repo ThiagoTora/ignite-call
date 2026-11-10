@@ -1,13 +1,7 @@
-import { Avatar as UIAvatar, Heading, Text } from "@ignite-ui/react";
 import { notFound } from "next/navigation";
 import { prisma } from "../../../lib/prisma";
-import { Container, UserHeader } from "./styles";
 import { Metadata } from "next";
-import type { ComponentType } from "react";
-
-const Avatar = UIAvatar as ComponentType<{
-  src?: string;
-}>;
+import { ScheduleContent } from "./ScheduleContent";
 
 interface ScheduleProps {
   params: Promise<{
@@ -21,9 +15,7 @@ export async function generateMetadata({
   const { username } = await params;
 
   const user = await prisma.user.findUnique({
-    where: {
-      username,
-    },
+    where: { username },
   });
 
   return {
@@ -35,9 +27,7 @@ export default async function Schedule({ params }: ScheduleProps) {
   const { username } = await params;
 
   const user = await prisma.user.findUnique({
-    where: {
-      username,
-    },
+    where: { username },
   });
 
   if (!user) {
@@ -45,12 +35,12 @@ export default async function Schedule({ params }: ScheduleProps) {
   }
 
   return (
-    <Container>
-      <UserHeader>
-        <Avatar src={user.avatar_url ?? ""} />
-        <Heading>{user.name}</Heading>
-        <Text>{user.email ?? ""}</Text>
-      </UserHeader>
-    </Container>
+    <ScheduleContent
+      user={{
+        name: user.name,
+        email: user.email,
+        avatar_url: user.avatar_url,
+      }}
+    />
   );
 }

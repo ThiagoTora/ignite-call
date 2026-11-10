@@ -1,9 +1,11 @@
+"use client";
+
 import { useState } from "react";
 import { CalendarStep } from "./CalendarStep";
 import { ConfirmStep } from "./ConfirmStep";
 
 export function ScheduleForm() {
-  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>();
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
 
   function handleClearSelectedDateTime() {
     setSelectedDateTime(null);
@@ -17,5 +19,6 @@ export function ScheduleForm() {
       />
     );
   }
+
   return <CalendarStep onSelectDateTime={setSelectedDateTime} />;
 }

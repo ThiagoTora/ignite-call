@@ -15,9 +15,10 @@ import {
   Text,
   TextArea,
 } from "@ignite-ui/react";
-import { FormAnnotation, ProfileBox } from "./styles";
+import { FormAnnotation, PhotoField, ProfileBox } from "./styles";
 import { ArrowRight } from "phosphor-react";
 import { api } from "@/src/lib/axios";
+import { AxiosError } from "axios";
 
 const updateProfileFormSchema = z.object({
   bio: z.string(),
@@ -46,11 +47,15 @@ export default function UpdateProfile({ session }: UpdateProfileProps) {
   } as ComponentProps<typeof Avatar>;
 
   async function handleUpdateProfile(data: UpdateProfileFormData) {
-    await api.put("/users/profile", {
-      bio: data.bio,
-    });
-
-    await router.push(`/schedule/${session.user.username}`);
+    console.log("session.user:", session.user);
+    try {
+      await api.put("/users/profile", { bio: data.bio });
+      router.push(`/schedule/${session.user.username}`);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.error(err.response?.status, err.response?.data);
+      }
+    }
   }
 
   return (
@@ -67,15 +72,15 @@ export default function UpdateProfile({ session }: UpdateProfileProps) {
       </Header>
 
       <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
-        <label>
+        <PhotoField>
           <Text size="sm">Foto de Perfil</Text>
           <Avatar {...avatarProps} />
-        </label>
+        </PhotoField>
 
         <label>
           <Text size="sm">Sobre você</Text>
 
-          <TextArea {...register("bio")} />
+          <TextArea css={{ width: "100%" }} {...register("bio")} />
 
           <FormAnnotation>Fale um pouco sobre você</FormAnnotation>
         </label>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
+import { StitchesRegistry } from "../lib/stitches-registry";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.url.com.br"),
@@ -33,7 +34,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <Providers>{children}</Providers>
+        <StitchesRegistry>
+          <Providers>{children}</Providers>
+        </StitchesRegistry>
       </body>
     </html>
   );

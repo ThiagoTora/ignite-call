@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CaretLeft, CaretRight } from "phosphor-react";
@@ -28,7 +30,7 @@ type CalendarWeeks = CalendarWeek[];
 
 interface BlockedDates {
   blockedWeekDays: number[];
-  blockedDates: number[]
+  blockedDates: number[];
 }
 
 interface CalendarProps {
@@ -79,6 +81,7 @@ export function Calendar({
   });
 
   const blockedWeekDays = blockedDates?.blockedWeekDays;
+  const blockedMonthDays = blockedDates?.blockedDates;
 
   const calendarWeeks = useMemo(() => {
     const daysInMonthArray = Array.from({
@@ -118,7 +121,8 @@ export function Calendar({
           date,
           disabled:
             date.endOf("day").isBefore(new Date()) ||
-            !!blockedWeekDays?.includes(date.get("day")),
+            !!blockedWeekDays?.includes(date.get("day")) ||
+            !!blockedMonthDays?.includes(date.get("date")),
         };
       }),
       ...nextMonthFillArray.map((date) => {
@@ -143,7 +147,7 @@ export function Calendar({
     );
 
     return calendarWeeks;
-  }, [currentDate, blockedWeekDays]);
+  }, [currentDate, blockedWeekDays, blockedMonthDays]);
 
   return (
     <CalendarContainer>
@@ -153,10 +157,14 @@ export function Calendar({
         </CalendarTitle>
 
         <CalendarActions>
-          <button onClick={handlePreviousMonth} title="Mês anterior">
+          <button
+            type="button"
+            onClick={handlePreviousMonth}
+            title="Mês anterior"
+          >
             <CaretLeft />
           </button>
-          <button onClick={handleNextMonth} title="Próximo mês">
+          <button type="button" onClick={handleNextMonth} title="Próximo mês">
             <CaretRight />
           </button>
         </CalendarActions>
@@ -176,6 +184,7 @@ export function Calendar({
               {days.map(({ date, disabled }) => (
                 <td key={date.toString()}>
                   <CalendarDay
+                    type="button"
                     onClick={() => onDateSelected(date.toDate())}
                     disabled={disabled}
                   >
