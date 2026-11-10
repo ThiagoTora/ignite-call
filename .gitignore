@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+.neon
+
+.vercel
+
+# Local development files
+*.db
+neon.ts
+migration-backups/
+.agents/
+.claude/
+.mcp.json
+.vscode/
+skills-lock.json
+
+/prisma/migrations-mysql-archive/
