@@ -1,36 +1,170 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ignite Call
 
-## Getting Started
+Aplicação web de agendamento de compromissos integrada ao Google Calendar, desenvolvida com Next.js e TypeScript.
 
-First, run the development server:
+O Ignite Call permite que usuários configurem sua disponibilidade e compartilhem horários para facilitar o agendamento de reuniões, com integração ao calendário do Google.
+
+## Tecnologias
+
+- **Next.js 16** — framework React para desenvolvimento da aplicação.
+- **React 19** — construção da interface.
+- **TypeScript** — tipagem estática.
+- **Prisma ORM** — comunicação com o banco de dados.
+- **PostgreSQL** — banco de dados relacional.
+- **Neon** — hospedagem e gerenciamento do banco de dados.
+- **NextAuth.js** — autenticação de usuários.
+- **Google APIs** — integração com o Google Calendar.
+- **TanStack Query** — gerenciamento de requisições e cache.
+- **React Hook Form** — gerenciamento de formulários.
+- **Zod** — validação de dados.
+- **Day.js** — manipulação de datas e horários.
+- **Axios** — requisições HTTP.
+- **ESLint** — análise e padronização de código.
+
+## Funcionalidades
+
+- Cadastro e autenticação de usuários.
+- Autenticação utilizando conta Google.
+- Integração com o Google Calendar.
+- Configuração de disponibilidade para agendamentos.
+- Organização de horários e compromissos.
+- Verificação de horários ocupados por meio da integração com o calendário.
+
+## Pré-requisitos
+
+Antes de começar, você precisará ter instalado:
+
+- [Node.js](https://nodejs.org/)
+- [Git](https://git-scm.com/)
+- [PostgreSQL](https://www.postgresql.org/) ou uma instância hospedada no [Neon](https://neon.tech/).
+- Uma aplicação OAuth configurada no [Google Cloud Console](https://console.cloud.google.com/).
+
+## ⚙️ Como executar o projeto
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/ThiagoTora/ignite-call.git
+```
+
+### 2. Acesse a pasta do projeto
+
+```bash
+cd ignite-call
+```
+
+### 3. Instale as dependências
+
+```bash
+npm install
+```
+
+### 4. Configure as variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis:
+
+```env
+# Database - Neon PostgreSQL
+DATABASE_URL=
+DATABASE_URL_UNPOOLED=
+
+# Google OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# NextAuth
+NEXTAUTH_SECRET=
+
+# Neon Configuration
+NEON_BRANCH=
+NEON_BRANCH_ID=
+NEON_FUNCTION_HOST_SUFFIX=
+```
+
+### Descrição das variáveis
+
+| Variável | Descrição |
+|---|---|
+| `DATABASE_URL` | URL de conexão com o banco de dados Neon utilizando o pool de conexões. |
+| `DATABASE_URL_UNPOOLED` | URL de conexão direta com o banco de dados, sem pool. |
+| `GOOGLE_CLIENT_ID` | Identificador do cliente OAuth configurado no Google Cloud Console. |
+| `GOOGLE_CLIENT_SECRET` | Chave secreta do cliente OAuth. |
+| `NEXTAUTH_SECRET` | Segredo utilizado pelo NextAuth para proteger sessões e tokens. |
+| `NEON_BRANCH` | Nome da branch do banco de dados Neon. |
+| `NEON_BRANCH_ID` | Identificador da branch no Neon. |
+| `NEON_FUNCTION_HOST_SUFFIX` | Sufixo de host utilizado na configuração das funções do Neon. |
+
+**Importante:**
+- Substitua os valores vazios pelas suas próprias credenciais.
+- Nunca compartilhe chaves privadas ou credenciais.
+- Não envie arquivos `.env` para o GitHub.
+- Configure as mesmas variáveis no painel da Vercel para o ambiente de produção.
+- O `NEXTAUTH_SECRET` pode ser gerado com:
+
+```bash
+openssl rand -base64 32
+```
+
+### 5. Configure o banco de dados
+
+Execute as migrações do Prisma:
+
+```bash
+npx prisma migrate dev
+```
+
+Gere o Prisma Client:
+
+```bash
+npx prisma generate
+```
+
+### 6. Execute a aplicação
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A aplicação estará disponível em:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📦 Scripts disponíveis
 
-## Learn More
+| Comando | Descrição |
+|---|---|
+| `npm run dev` | Inicia o ambiente de desenvolvimento. |
+| `npm run build` | Gera a versão de produção. |
+| `npm run start` | Inicia a aplicação em produção. |
+| `npm run lint` | Executa a análise estática com ESLint. |
+| `npx prisma generate` | Gera o Prisma Client. |
+| `npx prisma migrate dev` | Executa as migrações do banco de dados. |
 
-To learn more about Next.js, take a look at the following resources:
+## 🔗 Integração com Google Calendar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A aplicação utiliza OAuth 2.0 para autenticar usuários por meio de suas contas Google e permitir a integração com o Google Calendar.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Para configurar a integração:
 
-## Deploy on Vercel
+1. Acesse o [Google Cloud Console](https://console.cloud.google.com/).
+2. Crie ou selecione um projeto.
+3. Habilite a Google Calendar API.
+4. Configure a tela de consentimento OAuth.
+5. Crie credenciais OAuth 2.0 do tipo aplicação Web.
+6. Configure as URLs de redirecionamento autorizadas:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Desenvolvimento:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+http://localhost:3000/api/auth/callback/google
+```
+
+**Produção:**
+
+```text
+https://SEU-DOMINIO/api/auth/callback/google
+```
+
+Desenvolvido como projeto de estudo, com foco em desenvolvimento web, autenticação, integração com APIs externas, gerenciamento de banco de dados e construção de aplicações modernas com React e Next.js.
